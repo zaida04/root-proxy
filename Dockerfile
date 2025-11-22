@@ -19,5 +19,5 @@ RUN npm run build
 ENV NODE_ENV=production
 
 # Run the application
-CMD ["node", "dist/index.js"]
+CMD ["npm", "run", "bot"]
 
