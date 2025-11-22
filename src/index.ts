@@ -1,8 +1,13 @@
 import { ChannelMessageEvent, rootServer, type RootBotStartState } from "@rootsdk/server-bot";
 // import { initializeExample } from "./example.example";
 import Redis from "ioredis";
+import { existsSync } from "fs";
 
 async function main(): Promise<void> {
+    if (!existsSync("root-manifest.json")) {
+        throw new Error("root-manifest.json not found. Please mount it with: -v /path/to/root-manifest.json:/app/root-manifest.json");
+    }
+    
     await rootServer.lifecycle.start(botStarting);
 }
 

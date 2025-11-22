@@ -18,8 +18,13 @@ This is mostly used for development purposes. For production, you should actuall
 
 ### Run
 
+You will need to mount your `root-manifest.json` file and set the `REDIS_URL` environment variable:
+
 ```bash
-docker run -e REDIS_URL=redis://your-redis:6379 ghcr.io/zaida04/root-proxy:latest
+docker run \
+  -v /path/to/your/root-manifest.json:/app/root-manifest.json \
+  -e REDIS_URL=redis://your-redis:6379 \
+  ghcr.io/zaida04/root-proxy:latest
 ```
 
 ## License

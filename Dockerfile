@@ -11,7 +11,6 @@ RUN npm install
 # Copy source code and config
 COPY tsconfig.json ./
 COPY src ./src
-COPY root-manifest.json ./
 
 # Build the application
 RUN npm run build
