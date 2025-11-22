@@ -1,0 +1,29 @@
+{
+  "name": "root-proxy",
+  "version": "1.0.0",
+  "description": "Root proxy service for forwarding Root platform events to Redis.",
+  "main": "dist/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "bot": "rootsdk start devhost",
+    "dev": "nodemon"
+  },
+  "keywords": ["rootapp", "proxy", "redis", "events"],
+  "author": "Zaid Arshad",
+  "license": "MIT",
+  "devDependencies": {
+    "@rootsdk/dev-tools": "^0.15.1",
+    "@types/node": "^22.0.0",
+    "nodemon": "^3.1.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@rootsdk/server-bot": "^0.15.1",
+    "ioredis": "^5.8.2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

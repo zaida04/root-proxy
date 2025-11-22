@@ -1,0 +1,15 @@
+{
+  "id": "ACtO61GdgQmMX4Cc_16I3Q",
+  "version": "1.0.0",
+  "package": {
+    "server": {
+      "launch": "dist/index.js",
+      "deploy": [
+          "dist"
+      ],
+      "node_modules": [
+          "node_modules"
+      ]
+    }
+  }
+}

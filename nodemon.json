@@ -1,0 +1,13 @@
+{
+    "watch": [
+        "src",
+        "../../packages/framework/src"
+    ],
+    "ext": "ts,json",
+    "ignore": [
+        "src/**/*.d.ts",
+        "../../packages/**/*.d.ts"
+    ],
+    "exec": "pnpm run -w deps && pnpm run build && pnpm run bot",
+    "legacyWatch": true
+}
