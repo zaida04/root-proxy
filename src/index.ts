@@ -15,14 +15,13 @@ async function botStarting(state: RootBotStartState): Promise<void> {
     const redisUrl = process.env.REDIS_URL ?? "redis://localhost:6379";
     const client = new Redis(redisUrl);
 
-    async function forwardEvent(event: Record<string, unknown>): Promise<void> {
-        await client.publish("rp-events", JSON.stringify(event));
+    async function forwardEvent(eventName: string, event: Record<string, unknown>): Promise<void> {
+        await client.publish("rp-events", JSON.stringify({ rootEventName: eventName, rootEvent: event }));
     }
     
-    rootServer.community.channelMessages.on(ChannelMessageEvent.ChannelMessageCreated, forwardEvent);
-    rootServer.community.channelMessages.on(ChannelMessageEvent.ChannelMessageEdited, forwardEvent);
-    rootServer.community.channelMessages.on(ChannelMessageEvent.ChannelMessageDeleted, forwardEvent);
+    rootServer.community.channelMessages.on(ChannelMessageEvent.ChannelMessageCreated, (event) => forwardEvent("channelMessageCreated", event));
+    rootServer.community.channelMessages.on(ChannelMessageEvent.ChannelMessageEdited, (event) => forwardEvent("channelMessageEdited", event));
+    rootServer.community.channelMessages.on(ChannelMessageEvent.ChannelMessageDeleted, (event) => forwardEvent("channelMessageDeleted", event));
 }
-
 
 main().catch(console.error);
