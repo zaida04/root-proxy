@@ -23,12 +23,16 @@ type RootRpcErrorResponse = {
 export type RootRpcResponse = RootRpcSuccessResponse | RootRpcErrorResponse;
 
 function getByPath(obj: unknown, path: string): unknown {
-  return path.split(".").reduce<unknown>((current, key) => {
+  const splitPathByAccess = path.split(".");
+  let current = obj;
+  for (const key of splitPathByAccess) {
     if (current == null || typeof current !== "object") return undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (current as any)[key];
-  }, obj);
+    current = (current as any)[key];
+  }
+  return current;
 }
+
 
 /**
  * Set up a Redis-based RPC listener that allows external processes
@@ -73,13 +77,27 @@ export function setupRootCallHandler(redisUrl: string): void {
     };
 
     try {
-      const target = getByPath(rootServer, path);
+      const segments = path.split(".");
+      const methodName = segments.pop();
+      if (!methodName) {
+        throw new Error(`Invalid path '${path}'`);
+      }
+      const parentPath = segments.join(".");
+      const parent =
+        parentPath.length > 0 ? getByPath(rootServer, parentPath) : rootServer;
+
+      if (parent == null || typeof parent !== "object") {
+        throw new Error(`Parent at path '${parentPath}' is not an object`);
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const target = (parent as any)[methodName];
       if (typeof target !== "function") {
         throw new Error(`Target at path '${path}' is not a function`);
       }
 
-      const result = await (target)(...(args));
-      
+      const result = await target.apply(parent, args);
+
       await respond({
         id,
         ok: true,
@@ -87,6 +105,8 @@ export function setupRootCallHandler(redisUrl: string): void {
       });
     } catch (err) {
       const anyErr = err as any;
+      // eslint-disable-next-line no-console
+      console.error(err);
       await respond({
         id,
         ok: false,
