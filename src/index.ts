@@ -1,7 +1,11 @@
-import { ChannelMessageEvent, rootServer, type RootBotStartState } from "@rootsdk/server-bot";
-// import { initializeExample } from "./example.example";
+import {
+  ChannelMessageEvent,
+  rootServer,
+  type RootBotStartState,
+} from "@rootsdk/server-bot";
 import Redis from "ioredis";
 import { existsSync } from "fs";
+import { setupRootCallHandler } from "./call";
 
 async function main(): Promise<void> {
     if (!existsSync("root-manifest.json")) {
@@ -22,6 +26,9 @@ async function botStarting(state: RootBotStartState): Promise<void> {
     rootServer.community.channelMessages.on(ChannelMessageEvent.ChannelMessageCreated, (event) => forwardEvent("channelMessageCreated", event));
     rootServer.community.channelMessages.on(ChannelMessageEvent.ChannelMessageEdited, (event) => forwardEvent("channelMessageEdited", event));
     rootServer.community.channelMessages.on(ChannelMessageEvent.ChannelMessageDeleted, (event) => forwardEvent("channelMessageDeleted", event));
+
+    // Set up RPC handler for incoming calls
+    setupRootCallHandler(redisUrl);
 }
 
 main().catch(console.error);
